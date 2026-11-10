@@ -69,12 +69,29 @@
                     this.displayCart = !this.displayCart;
                 },
                 submitCheckout(){
-                    alert (`Your order has been placed successfully\nName: ${this.order.firstName} ${this.order.lastName}\nPhone: ${this.order.phone}\nTotal Paid: Rs${this.totalCartPrice}`)
+                    const newOrder = {
+                        name: this.order.name,
+                        phone: this.order.phone,
+                        lessonIds: this.cart.map(item => item.id),
+                        spaces: this.cart.length
+                    }
+                    fetch('http://localhost:3000/orders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type' : 'application/json'
+                        },
+                        body: JSON.stringify(newOrder),
+                    })
+                    .then(response => response.json())
+                    .then (data => {
+                        alert (`Your order has been placed successfully\nName: ${this.order.firstName} ${this.order.lastName}\nPhone: ${this.order.phone}\nTotal Paid: Rs${this.totalCartPrice}`)
                     this.cart = [];
                     this.order.firstName = '';
                     this.order.lastName = '';
                     this.order.phone = '';
                     this.displayCart = false
+                    })
+                    
                 }
             }
         })
