@@ -30,7 +30,7 @@
                 }
             },
             created(){
-                fetch(`${Lesson_Store}`)
+                fetch(`${Lesson_Store}lessons`)
                 .then(res => res.json())
                 .then(data => {
                     this.lessons = data;
