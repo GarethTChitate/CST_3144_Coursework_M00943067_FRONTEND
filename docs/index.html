@@ -76,7 +76,7 @@
                         lessonIds: this.cart.map(item => item.id),
                         spaces: this.cart.length
                     }
-                    fetch(`{Lesson_Store}orders`, {
+                    fetch(`${Lesson_Store}orders`, {
                         method: 'POST',
                         headers: {
                             'Content-Type' : 'application/json'
