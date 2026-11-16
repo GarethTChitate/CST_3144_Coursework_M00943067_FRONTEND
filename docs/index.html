@@ -30,7 +30,7 @@
                 }
             },
             created(){
-                fetch('http://localhost:3000/lessons')
+                fetch(`${Lesson_Store}`)
                 .then(res => res.json())
                 .then(data => {
                     this.lessons = data;
