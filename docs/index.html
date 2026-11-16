@@ -76,7 +76,7 @@
                         lessonIds: this.cart.map(item => item.id),
                         spaces: this.cart.length
                     }
-                    fetch('http://localhost:3000/orders', {
+                    fetch(`{Lesson_Store}orders`, {
                         method: 'POST',
                         headers: {
                             'Content-Type' : 'application/json'
