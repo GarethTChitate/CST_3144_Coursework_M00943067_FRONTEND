@@ -98,3 +98,27 @@ button.cart-button:disabled {
     color: #94a3b8;
     cursor: not-allowed;
 }
+
+.filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-weight: 600;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #4f46e5;
+}
