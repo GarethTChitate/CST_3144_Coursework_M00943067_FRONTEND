@@ -20,6 +20,7 @@
             data(){
                 return {
                     displayCart: false,
+                    selectedLocation: 'All',
                     cart: [],
                     order:{
                         firstName: '',
@@ -47,7 +48,7 @@
                     return this.cart.reduce((total, item) => total + item.price, 0)
                 },
                 uniqueLocations(){
-                    const locations = this.lessons.map(lesson => lesson.locations)
+                    const locations = this.lessons.map(lesson => lesson.location)
                     .filter(Boolean)
                     return ['All', ...new Set(locations)]
                 },
@@ -141,7 +142,7 @@
    <div v-else class="checkout-container">
     <h2>Your Cart</h2>
     <p>Items in Cart: {{ numberOfItems }}</p>
-    <ul v-else="cart-list">
+    <ul class="cart-list">
         <li v-for="(item, index) in cart" :key="index"> <span>{{ item.subject }} - Rs{{ item.price }} ({{ item.location }})</span>
         <button class="button-remove" @click="removeFromCart(index)">Remove</button></li>
     </ul>
