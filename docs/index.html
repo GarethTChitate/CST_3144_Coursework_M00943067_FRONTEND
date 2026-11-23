@@ -175,7 +175,7 @@
         <button class="button-remove" @click="removeFromCart(index)">Remove</button></li>
     </ul>
     <div class="total-price">Total Price: Rs {{ totalCartPrice }}</div>
-    <button type="button" @click="proceedToCheckout" :disabled="cart.length">Proceed To Checkout</button>
+    <button type="button" @click="proceedToCheckout" :disabled="cart.length === 0">Proceed To Checkout</button>
 
     </div>
     <div v-else>
