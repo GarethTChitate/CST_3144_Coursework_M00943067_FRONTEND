@@ -83,10 +83,12 @@
                 },
                 submitCheckout(){
                     const newOrder = {
-                        name: this.order.name,
+                        firstName: this.order.firstName,
+                        lastName: this.order.lastName,
                         phone: this.order.phone,
                         lessonIds: this.cart.map(item => item.id),
                         spaces: this.cart.length
+
                     }
                     fetch(`${Lesson_Store}orders`, {
                         method: 'POST',
