@@ -134,7 +134,7 @@
 
 <div id= 'app'>
    <h1>Lesson Booking Store</h1>
-   <button class="cart-button" @click="toggleCart" :disabled="cart.length === 0 && !displayCart">{{ displayCart ? 'Back To Lessons' : 'Checkout (' + numberOfItems +')' }}</button>
+   <button class="cart-button" @click="toggleCart" :disabled="cart.length === 0 && !displayCart">{{ displayCart ? 'Back To Lessons' : 'View Cart (' + numberOfItems +')' }}</button>
    <div v-if="!displayCart">
     <div class="filter-bar">
         <h2>Available Lessons</h2>
