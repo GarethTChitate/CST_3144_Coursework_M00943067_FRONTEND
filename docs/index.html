@@ -21,6 +21,7 @@
                 return {
                     displayCart: false,
                     selectedLocation: 'All',
+                    sortOrder: 'default',
                     cart: [],
                     order:{
                         firstName: '',
@@ -53,10 +54,13 @@
                     return ['All', ...new Set(locations)]
                 },
                 filteredLessons(){
-                    if (this.selectedLocation === 'All'){
-                        return this.lessons
+                    let list = this.selectedLocation === 'All' ? [...this.lessons] : this.lessons.filter(lesson => lesson.location === this.selectedLocation)
+                    if (this.sortOrder === 'asc'){
+                        list.sort((a, b) => Number(a.price) - Number(b.price))
+                    } else if(this.sortOrder === 'desc'){
+                        list.sort((a,b) => Number(b.price) - Number(a.price))
                     }
-                    return this.lessons.filter(lesson => lesson.location === this.selectedLocation)
+                    return list
                 }
             },
 
@@ -124,6 +128,12 @@
             <label for="locationFilter">Location:</label>
             <select id="locationFilter" v-model="selectedLocation" class="filter-select">
                 <option v-for="loc in uniqueLocations" :key="loc" :value="loc"> {{ loc }}</option>
+            </select>
+            <label for="priceSort">Sort by Price:</label>
+            <select id="priceSort" v-model="sortOrder" class="filter-select">
+                <option value="default">Default</option>
+                <option value="asc">Price: Low to High</option>
+                <option value="desc">Price: High to Low</option>
             </select>
         </div>
     </div>
