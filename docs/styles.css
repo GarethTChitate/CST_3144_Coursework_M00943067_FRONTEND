@@ -127,12 +127,12 @@ button.cart-button:disabled {
     margin-left: 8px;
 }
 
-.error-message {
+.icon-error {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     color: red;
-    background-color: green;
-    border: 1px solid black;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 14px;
-    margin-bottom: 12px;
+    border: 1px dashed;
+    font-size: 13px;
+    margin-bottom: 10px;
 }

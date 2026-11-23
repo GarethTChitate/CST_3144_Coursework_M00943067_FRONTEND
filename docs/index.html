@@ -22,6 +22,7 @@
                     displayCart: false,
                     selectedLocation: 'All',
                     showCheckoutForm: false,
+                    brokenImages:{},
                     sortOrder: 'default',
                     cart: [],
                     order:{
@@ -125,7 +126,11 @@
                     this.displayCart = false
                     })
                     
+                },
+                hasIcon(lesson){
+                    return typeof lesson.icon === 'string' && lesson.icon.trim().length > 0
                 }
+                
             }
         })
         myApp.mount('#app')
@@ -156,7 +161,14 @@
     <div class="lessons-grid">
         <div v-for="lesson in filteredLessons" :key="lesson.id" class="lesson-card">
             <div class="lesson-icon">
-                <i :class="lesson.icon"></i>
+                <template v-if="hasIcon(lesson)">
+                    <i :class="lesson.icon"></i>
+                </template>
+                <div v-else class="icon-error">
+                    <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                    <span>Missing Icon class</span>
+                </div>
+                
             </div>
             <h3>{{ lesson.subject }}</h3>
             <p><strong>Location: </strong>{{ lesson.location }}</p>
