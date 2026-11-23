@@ -45,6 +45,17 @@
                 },
                 totalCartPrice(){
                     return this.cart.reduce((total, item) => total + item.price, 0)
+                },
+                uniqueLocations(){
+                    const locations = this.lessons.map(lesson => lesson.locations)
+                    .filter(Boolean)
+                    return ['All', ...new Set(locations)]
+                },
+                filteredLessons(){
+                    if (this.selectedLocation === 'All'){
+                        return this.lessons
+                    }
+                    return this.lessons.filter(lesson => lesson.location === this.selectedLocation)
                 }
             },
 
@@ -104,9 +115,18 @@
    <h1>Lesson Booking Store</h1>
    <button class="cart-button" @click="toggleCart" :disabled="cart.length === 0 && !displayCart">{{ displayCart ? 'Back To Lessons' : 'Checkout (' + numberOfItems +')' }}</button>
    <div v-if="!displayCart">
-    <h2>Available Lessons</h2>
+    <div class="filter-bar">
+        <h2>Available Lessons</h2>
+        <div class="filter-group">
+            <label for="locationFilter">Location:</label>
+            <select id="locationFilter" v-model="selectedLocation" class="filter-select">
+                <option v-for="loc in uniqueLocations" :key="loc" :value="loc"> {{ loc }}</option>
+            </select>
+        </div>
+    </div>
+    
     <div class="lessons-grid">
-        <div v-for="lesson in lessons" :key="lesson.id" class="lesson-card">
+        <div v-for="lesson in filteredLessons" :key="lesson.id" class="lesson-card">
             <div class="lesson-icon">
                 <i :class="lesson.icon"></i>
             </div>
