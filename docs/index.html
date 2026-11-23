@@ -21,6 +21,7 @@
                 return {
                     displayCart: false,
                     selectedLocation: 'All',
+                    showCheckoutForm: false,
                     sortOrder: 'default',
                     cart: [],
                     order:{
@@ -80,11 +81,24 @@
                     this.cart.splice(index, 1)
                     if (this.cart.length === 0){
                         this.displayCart = false;
+                        this.showCheckoutForm = false
                     }
                 },
                 toggleCart(){
                     this.displayCart = !this.displayCart;
+                    if (!this.displayCart){
+                        this.showCheckoutForm = false
+                    }
                 },
+                proceedToCheckout(){
+                    if (this.cart.length > 0){
+                        this.showCheckoutForm = true
+                    }
+                },
+                backToCart(){
+                    this.showCheckoutForm = false
+                },
+                
                 submitCheckout(){
                     const newOrder = {
                         firstName: this.order.firstName,
@@ -129,7 +143,7 @@
             <select id="locationFilter" v-model="selectedLocation" class="filter-select">
                 <option v-for="loc in uniqueLocations" :key="loc" :value="loc"> {{ loc }}</option>
             </select>
-            
+
             <label for="priceSort">Sort by Price:</label>
             <select id="priceSort" v-model="sortOrder" class="filter-select">
                 <option value="default">Default</option>
@@ -153,14 +167,19 @@
     </div>
    </div>
    <div v-else class="checkout-container">
-    <h2>Your Cart</h2>
+    <div v-if="!showCheckoutForm">
+        <h2>Your Cart</h2>
     <p>Items in Cart: {{ numberOfItems }}</p>
     <ul class="cart-list">
         <li v-for="(item, index) in cart" :key="index"> <span>{{ item.subject }} - Rs{{ item.price }} ({{ item.location }})</span>
         <button class="button-remove" @click="removeFromCart(index)">Remove</button></li>
     </ul>
     <div class="total-price">Total Price: Rs {{ totalCartPrice }}</div>
-    <h3>Checkout Details</h3>
+    <button type="button" @click="proceedToCheckout" :disabled="cart.length">Proceed To Checkout</button>
+
+    </div>
+    <div v-else>
+        <h3>Checkout Details</h3>
     <form @submit.prevent="submitCheckout">
         <div class="form-group">
             <label for="firstName">First Name: </label>
@@ -177,6 +196,7 @@
         <button type="submit" :disabled="cart.length === 0">Place Order</button>
     </form>
    </div>
+    </div>
 
 </div>
 
