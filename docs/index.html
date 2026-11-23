@@ -23,7 +23,6 @@
                     selectedLocation: 'All',
                     showCheckoutForm: false,
                     sortOrder: 'default',
-                    checkoutError: '',
                     cart: [],
                     order:{
                         firstName: '',
@@ -63,10 +62,6 @@
                         list.sort((a,b) => Number(b.price) - Number(a.price))
                     }
                     return list
-                },
-                isPhoneValid(){
-                    const digitsOnly = this.order.phone.replace(/^\+/, '')
-                    return [0-9].test(this.order.phone.trim()) && digitsOnly.length >= 7
                 }
             },
 
@@ -139,7 +134,7 @@
 
 <div id= 'app'>
    <h1>Lesson Booking Store</h1>
-   <button class="cart-button" @click="toggleCart" :disabled="cart.length === 0 && !displayCart">{{ displayCart ? 'Back To Lessons' : 'View Cart (' + numberOfItems +')' }}</button>
+   <button class="cart-button" @click="toggleCart" :disabled="cart.length === 0 && !displayCart">{{ displayCart ? 'Back To Lessons' : 'View (' + numberOfItems +')' }}</button>
    <div v-if="!displayCart">
     <div class="filter-bar">
         <h2>Available Lessons</h2>
@@ -196,9 +191,8 @@
         </div>
         <div class="form-group">
             <label for="phone">Contact Number: </label>
-            <input type="tel" id="phone" v-model="order.phone" @keypress="e => {if(![0-9].test(e.key)) e.preventDefault();}" pattern="[0-9]{7, 15}" title="Enter 7 to 15 digits (numbers only)" required>
+            <input type="tel" id="phone" v-model="order.phone" required>
         </div>
-        <p v-if="checkoutError" class="error-message">{{ checkoutError }}</p>
         <button type="submit" :disabled="cart.length === 0">Place Order</button>
     </form>
    </div>
