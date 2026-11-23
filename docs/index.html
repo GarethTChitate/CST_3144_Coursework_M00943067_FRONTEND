@@ -129,6 +129,7 @@
             <select id="locationFilter" v-model="selectedLocation" class="filter-select">
                 <option v-for="loc in uniqueLocations" :key="loc" :value="loc"> {{ loc }}</option>
             </select>
+            
             <label for="priceSort">Sort by Price:</label>
             <select id="priceSort" v-model="sortOrder" class="filter-select">
                 <option value="default">Default</option>
