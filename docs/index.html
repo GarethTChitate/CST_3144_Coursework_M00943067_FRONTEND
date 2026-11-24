@@ -58,7 +58,9 @@
                 },
                 filteredLessons(){
                     const query = this.searchQuery.trim().toLowerCase()
-                    let list = this.selectedLocation === 'All' ? [...this.lessons] : this.lessons.filter(lesson => lesson.location === this.selectedLocation)
+                    let list = this.lessons.filter(lesson => {
+                        const matchesLocation = this.selectedLocation === 'All' || lesson.location === this.selectedLocation
+                    })
 
                     const matchesSearch = !query ||
                     String(lesson.subject || '').toLowerCase().includes(query) || String(lesson.location || '').toLowerCase().includes(query) || String(lesson.price ?? '').toLowerCase().includes(query)
