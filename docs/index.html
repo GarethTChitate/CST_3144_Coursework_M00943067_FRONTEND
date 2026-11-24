@@ -22,6 +22,7 @@
                     displayCart: false,
                     selectedLocation: 'All',
                     showCheckoutForm: false,
+                    searchQuery: '',
                     brokenImages:{},
                     sortOrder: 'default',
                     cart: [],
@@ -56,7 +57,12 @@
                     return ['All', ...new Set(locations)]
                 },
                 filteredLessons(){
+                    const query = this.searchQuery.trim().toLowerCase()
                     let list = this.selectedLocation === 'All' ? [...this.lessons] : this.lessons.filter(lesson => lesson.location === this.selectedLocation)
+
+                    const matchesSearch = !query ||
+                    String(lesson.subject || '').toLowerCase().includes(query) || String(lesson.location || '').toLowerCase().includes(query) || String(lesson.price ?? '').toLowerCase().includes(query)
+                    return matchesLocation && matchesSearch
                     if (this.sortOrder === 'asc'){
                         list.sort((a, b) => Number(a.price) - Number(b.price))
                     } else if(this.sortOrder === 'desc'){
@@ -138,12 +144,14 @@
 
 
 <div id= 'app'>
-   <h1>Lesson Booking Store</h1>
+   <h1>Lesson Booking Page</h1>
    <button class="cart-button" @click="toggleCart" :disabled="cart.length === 0 && !displayCart">{{ displayCart ? 'Back To Lessons' : 'View (' + numberOfItems +')' }}</button>
    <div v-if="!displayCart">
     <div class="filter-bar">
         <h2>Available Lessons</h2>
         <div class="filter-group">
+            <input type="search" v-model="searchQuery" placeholder="Search lessons..." aria-label="Search lessons" class="search-input">
+            <button v-if="searchQuery" type="button" @click="searchQuery = ''" class="clear-search-btn">Clear</button>
             <label for="locationFilter">Location:</label>
             <select id="locationFilter" v-model="selectedLocation" class="filter-select">
                 <option v-for="loc in uniqueLocations" :key="loc" :value="loc"> {{ loc }}</option>
@@ -157,6 +165,7 @@
             </select>
         </div>
     </div>
+    <p v-if="filteredLessons.length === 0" class="no-results">No lessons match your current search</p>
     
     <div class="lessons-grid">
         <div v-for="lesson in filteredLessons" :key="lesson.id" class="lesson-card">
