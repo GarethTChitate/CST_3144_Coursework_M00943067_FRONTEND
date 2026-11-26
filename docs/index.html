@@ -24,6 +24,7 @@
                     showCheckoutForm: false,
                     brokenImages:{},
                     sortOrder: 'default',
+                    checkoutError: '',
                     cart: [],
                     order:{
                         firstName: '',
@@ -63,6 +64,17 @@
                         list.sort((a,b) => Number(b.price) - Number(a.price))
                     }
                     return list
+                },
+                isNameValid(){
+                    const nameRegex = /^[A-Z]{2,40}$/
+                    return (nameRegex.test(this.order.firstName.trim()) && nameRegex.test(this.order.lastName.trim()))
+                },
+                isNumberValid(){
+                    const digitsOnly = this.order.phone.replace(/^\+/, '')
+                    return /^\[0-9]{7,15}$/.test(this.order.phone.trim()) && digitsOnly.length >=7
+                },
+                isCheckoutValid(){
+                    return this.cart.length > 0 && this.isNameValid && this.isNumberValid
                 }
             },
 
@@ -101,6 +113,19 @@
                 },
                 
                 submitCheckout(){
+                    if (this.cart.length === 0){
+                        this.checkoutError = 'Your cart is empty'
+                        return
+                    }
+                    if (!this.isNameValid){
+                        this.checkoutError = 'Please enter a valid name'
+                        return
+                    }
+                    if(!this.isNumberValid){
+                        this.checkoutError = 'Enter a valid number'
+                        return
+                    }
+                    this.checkoutError = ''
                     const newOrder = {
                         firstName: this.order.firstName,
                         lastName: this.order.lastName,
@@ -109,6 +134,7 @@
                         spaces: this.cart.length
 
                     }
+                    
                     fetch(`${Lesson_Store}orders`, {
                         method: 'POST',
                         headers: {
@@ -126,6 +152,18 @@
                     this.displayCart = false
                     })
                     
+                },
+                cleanName(field){
+                    this.order[field] = this.order[field].replace(/[A-Z]/, '')
+                    this.checkoutError = ''
+                },
+                cleanNumber(){
+                    let cleanedNumber = this.order.phone.replace(/[0-9]/, '')
+                    if (cleanedNumber.indexOf('+') > 0){
+                        cleanedNumber = cleanedNumber.replace(/\+/g, '')
+                    }
+                    this.order.phone = cleanedNumber
+                    this.checkoutError = ''
                 },
                 hasIcon(lesson){
                     return typeof lesson.icon === 'string' && lesson.icon.trim().length > 0
@@ -195,17 +233,19 @@
     <form @submit.prevent="submitCheckout">
         <div class="form-group">
             <label for="firstName">First Name: </label>
-            <input type="text" id="firstName" v-model="order.firstName" required>
+            <input type="text" id="firstName" v-model="order.firstName" @input="cleanName('firstName')" pattern="[A-Z]{2,40}" title="Letters only" required>
         </div>
         <div class="form-group">
             <label for="lastName">Last Name: </label>
-            <input type="text" id="lastName" v-model="order.lastName" required>
+            <input type="text" id="lastName" v-model="order.lastName" @input="cleanName('lastName')" pattern="[A-Z]{2,40}" title="Letters only" required>
         </div>
         <div class="form-group">
             <label for="phone">Contact Number: </label>
-            <input type="tel" id="phone" v-model="order.phone" required>
+            <input type="tel" id="phone" v-model="order.phone" @input="cleanNumber" @keypress="e => { if (!/[0-9]/.test(e.key)) e.preventDefault()}" inputmode="numeric" pattern="\[0-9]{7,15}" title="Numbers only" required>
         </div>
-        <button type="submit" :disabled="cart.length === 0">Place Order</button>
+        <p v-if="checkoutError" class="error-message">{{ checkoutError }}/p>
+        <button type="button" @click="backToCart">Back To Cart</button>
+        <button type="submit" :disabled="!isCheckoutValid">Place Order</button>
     </form>
    </div>
     </div>
