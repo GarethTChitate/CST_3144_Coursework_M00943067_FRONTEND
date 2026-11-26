@@ -66,12 +66,13 @@
                     return list
                 },
                 isNameValid(){
-                    const nameRegex = /^[A-Z]{2,40}$/
+                    const nameRegex = /^[A-Za-z][A-Za-z' -]{1,39}$/
                     return (nameRegex.test(this.order.firstName.trim()) && nameRegex.test(this.order.lastName.trim()))
                 },
                 isNumberValid(){
-                    const digitsOnly = this.order.phone.replace(/^\+/, '')
-                    return /^\[0-9]{7,15}$/.test(this.order.phone.trim()) && digitsOnly.length >=7
+                    const trimmed = this.order.phone.trim()
+                    const digitsOnly = trimmed.replace(/\D/g, '')
+                    return /^\+?[0-9]{7,15}$/.test(trimmed) && digitsOnly.length >=7
                 },
                 isCheckoutValid(){
                     return this.cart.length > 0 && this.isNameValid && this.isNumberValid
@@ -154,15 +155,15 @@
                     
                 },
                 cleanName(field){
-                    this.order[field] = this.order[field].replace(/[A-Z]/, '')
+                    this.order[field] = this.order[field].replace(/[^A-Za-z' -]/g, '')
                     this.checkoutError = ''
                 },
                 cleanNumber(){
-                    let cleanedNumber = this.order.phone.replace(/[0-9]/, '')
-                    if (cleanedNumber.indexOf('+') > 0){
-                        cleanedNumber = cleanedNumber.replace(/\+/g, '')
+                    let cleaned = this.order.phone.replace(/[^0-9+]/g, '')
+                    if (cleaned.indexOf('+') > 0){
+                        cleaned = cleaned.replace(/\+/g, '')
                     }
-                    this.order.phone = cleanedNumber
+                    this.order.phone = cleaned
                     this.checkoutError = ''
                 },
                 hasIcon(lesson){
@@ -233,17 +234,17 @@
     <form @submit.prevent="submitCheckout">
         <div class="form-group">
             <label for="firstName">First Name: </label>
-            <input type="text" id="firstName" v-model="order.firstName" @input="cleanName('firstName')" pattern="[A-Z]{2,40}" title="Letters only" required>
+            <input type="text" id="firstName" v-model="order.firstName" @input="cleanName('firstName')" pattern="[A-Za-z][A-Za-z' -]{1,39}" title="Letters only" required>
         </div>
         <div class="form-group">
             <label for="lastName">Last Name: </label>
-            <input type="text" id="lastName" v-model="order.lastName" @input="cleanName('lastName')" pattern="[A-Z]{2,40}" title="Letters only" required>
+            <input type="text" id="lastName" v-model="order.lastName" @input="cleanName('lastName')" pattern="[A-Za-z][A-Za-z' -]{1,39}" title="Letters only" required>
         </div>
         <div class="form-group">
             <label for="phone">Contact Number: </label>
-            <input type="tel" id="phone" v-model="order.phone" @input="cleanNumber" @keypress="e => { if (!/[0-9]/.test(e.key)) e.preventDefault()}" inputmode="numeric" pattern="\[0-9]{7,15}" title="Numbers only" required>
+            <input type="tel" id="phone" v-model="order.phone" @input="cleanNumber" @keypress="e => { if (!/[0-9+]/.test(e.key)) e.preventDefault()}" inputmode="numeric" pattern="\+?[0-9]{7,15}" title="Numbers only" required>
         </div>
-        <p v-if="checkoutError" class="error-message">{{ checkoutError }}/p>
+        <p v-if="checkoutError" class="error-message">{{ checkoutError }}</p>
         <button type="button" @click="backToCart">Back To Cart</button>
         <button type="submit" :disabled="!isCheckoutValid">Place Order</button>
     </form>
