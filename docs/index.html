@@ -213,7 +213,7 @@
             <label for="teacherFilter">Teacher:</label>
             <select id="teacherFilter" v-model="selectedTeacherId" class="filter-select">
                 <option value="All">All Teachers</option>
-                <option v-for="teacher in Teachers" :key="teacher._id || teacher.id" :value="teacher._id || teacher.id">{{ teacher.firstName }} {{ teacher.lastName}} </option>
+                <option v-for="teacher in teachers" :key="teacher._id || teacher.id" :value="teacher._id || teacher.id">{{ teacher.firstName }} {{ teacher.lastName}} </option>
             </select> 
 
             <label for="priceSort">Sort by Price:</label>
