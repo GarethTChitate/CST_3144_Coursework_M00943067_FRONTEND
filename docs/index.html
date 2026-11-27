@@ -23,6 +23,9 @@
                     selectedLocation: 'All',
                     showCheckoutForm: false,
                     brokenImages:{},
+                    selectedTeacherId: 'All',
+                    teachers: [],
+                    lessons:[],
                     sortOrder: 'default',
                     checkoutError: '',
                     cart: [],
@@ -43,6 +46,10 @@
                 .catch (error => {
                     console.error('Error fetching lessons')
                 })
+                fetch(`${Lesson_Store}teachers`)
+                .then(res => res.json())
+                .then(data => {this.teachers = data;})
+                .catch(error => console.error('Error fetching teachers', error))
             },
             computed: {
                 numberOfItems(){
@@ -59,7 +66,13 @@
                 },
 
                 filteredLessons(){
-                    let list = this.selectedLocation === 'All' ? [...this.lessons] : this.lessons.filter(lesson => lesson.location === this.selectedLocation)
+                    const query = this.searchQuery.trim().toLowerCase()
+                    let list = this.lessons.filter(lesson => {
+                        const matchesLocation = this.selectedLocation === 'All' || lesson.location === this.selectedLocation
+                        const matchesTeacher = this.selectedTeacherId === 'All' || String(lesson.teacherId) === String(this.selectedTeacherId)
+                        const matchesSearch = !query || String(lesson.subject || '').toLowerCase().includes(query) || String(lesson.location || '').toLowerCase().includes(query) || String(lesson.price ?? '').toLowerCase().includes(query) || this.getTeacherName(lesson.teacherId).toLowerCase().includes(query)
+                        return matchesLocation && matchesTeacher && matchesSearch
+                    })
                     if (this.sortOrder === 'asc'){
                         list.sort((a, b) => Number(a.price) - Number(b.price))
                     } else if(this.sortOrder === 'desc'){
@@ -114,6 +127,10 @@
                 },
                 backToCart(){
                     this.showCheckoutForm = false
+                },
+                getTeacherName(){
+                    const teacher = this.teachers.find(t => String(t._id || t.id) === String(teacherId))
+                    return teacher ? `${teacher.firstName} ${teacher.lastName}` : 'Unassigned'
                 },
                 
                 submitCheckout(){
@@ -193,6 +210,12 @@
                 <option v-for="loc in uniqueLocations" :key="loc" :value="loc"> {{ loc }}</option>
             </select>
 
+            <label for="teacherFilter">Teacher:</label>
+            <select id="teacherFilter" v-model="selectedTeacherId" class="filter-select">
+                <option value="All">All Teachers</option>
+                <option v-for="teacher in Teachers" :key="teacher._id || teacher.id" :value="teacher._id || teacher.id">{{ teacher.firstName }} {{ teacher.lastName}} </option>
+            </select> 
+
             <label for="priceSort">Sort by Price:</label>
             <select id="priceSort" v-model="sortOrder" class="filter-select">
                 <option value="default">Default</option>
@@ -215,6 +238,7 @@
                 
             </div>
             <h3>{{ lesson.subject }}</h3>
+            <p><strong>Teacher: </strong>{{ getTeacherName(lesson.teacherId) }}</p>
             <p><strong>Location: </strong>{{ lesson.location }}</p>
             <p><strong>Price: </strong>Rs{{ lesson.price }}</p>
             <p><strong>Available Spaces: </strong>{{ lesson.spaces }}</p>
