@@ -24,6 +24,7 @@
                     showCheckoutForm: false,
                     brokenImages:{},
                     selectedTeacherId: 'All',
+                    searchQuery: '',
                     teachers: [],
                     lessons:[],
                     sortOrder: 'default',
@@ -128,7 +129,7 @@
                 backToCart(){
                     this.showCheckoutForm = false
                 },
-                getTeacherName(){
+                getTeacherName(teacherId){
                     const teacher = this.teachers.find(t => String(t._id || t.id) === String(teacherId))
                     return teacher ? `${teacher.firstName} ${teacher.lastName}` : 'Unassigned'
                 },
